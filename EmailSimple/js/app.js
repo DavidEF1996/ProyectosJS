@@ -11,10 +11,10 @@ function addEvenListeners() {
   email.addEventListener("blur", verificarCampos);
   asunto.addEventListener("blur", verificarCampos);
   mensaje.addEventListener("blur", verificarCampos);
-  botonResetear.addEventListener("click", resetear);
+  botonResetear.addEventListener("click", resetear2);
   // formulario.addEventListener("submit", enviarF);
 
-  formulario.addEventListener("click", resetear2);
+  formulario.addEventListener("submit", enviarF);
 }
 
 function iniciarApp() {
@@ -114,7 +114,8 @@ function resetear() {
   iniciarApp();
 }
 
-function resetear2() {
+function resetear2(e) {
+  e.stopPropagation();
   e.preventDefault();
   const error = document.querySelector("p.error");
   if (error) {
