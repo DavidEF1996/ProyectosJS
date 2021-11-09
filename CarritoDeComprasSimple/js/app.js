@@ -13,6 +13,12 @@ principal();
 function principal() {
   tarjeta.addEventListener("click", AgregarEvento);
   carrito.addEventListener("click", EliminarProducto);
+
+  document.addEventListener("DOMContentLoaded", () => {
+    arregloCursos = JSON.parse(localStorage.getItem("producto")) || [];
+    console.log(arregloCursos);
+    CrearFilaCarrito();
+  });
 }
 
 function AgregarEvento(e) {
@@ -53,6 +59,7 @@ function ExtraerInformacion(valores) {
   }
 
   console.log(arregloCursos);
+  almacenarMemoria();
   CrearFilaCarrito(arregloCursos);
 }
 
@@ -104,10 +111,17 @@ function EliminarProducto(e) {
       arre.cantidad--;
       let arr = arregloCursos.filter((producto) => producto.id !== aux);
       arregloCursos = [...arr, ...arre];
+      localStorage.setItem("producto", JSON.stringify(arregloCursos));
     } else {
       let arr = arregloCursos.filter((producto) => producto.id !== aux);
       arregloCursos = arr;
+      localStorage.setItem("producto", JSON.stringify(arregloCursos));
     }
   }
-  CrearFilaCarrito();
+  CrearFilaCarrito(arregloCursos);
+}
+
+//Almacenar en Memoria
+function almacenarMemoria() {
+  localStorage.setItem("producto", JSON.stringify(arregloCursos));
 }
