@@ -9,6 +9,8 @@ const fecha = document.querySelector("#fecha");
 const hora = document.querySelector("#hora");
 const sintomas = document.querySelector("#sintomas");
 
+let estadoActualizar = false;
+
 //LISTENERS
 principal();
 function principal() {
@@ -46,6 +48,13 @@ class Paciente {
 
   eliminarCita(id) {
     this.pacientes = this.pacientes.filter((cita) => cita.id !== id);
+  }
+
+  actualizarCita(cita) {
+    this.pacientes = this.pacientes.map((paciente) =>
+      paciente.id === cita.id ? cita : paciente
+    );
+    console.log(this.pacientes.length);
   }
 }
 
@@ -121,7 +130,7 @@ class UI {
 
       // Añade un botón de editar...
       const btnEditar = document.createElement("button");
-      // btnEditar.onclick = () => cargarEdicion(cita);
+      btnEditar.onclick = () => cargarEdicion(element);
 
       btnEditar.classList.add("btn", "btn-info");
       btnEditar.innerHTML =
@@ -165,12 +174,23 @@ function obtenerDatosPaciente(e) {
   ) {
     ui.mostrarMensaje("No puede haber campos vacíos", "error");
   } else {
+    if (!estadoActualizar == true) {
+      ui.limpiarHtml();
+      cita.id = Date.now();
+      adminPaciente.agregarCita({ ...cita });
+      ui.mostrarMensaje("Cita agregada correctamente", "success");
+    } else {
+      console.log("Estoy editando");
+      adminPaciente.actualizarCita({ ...cita });
+      ui.mostrarMensaje("Se actualizo correctamente", "success");
+      estadoActualizar = false;
+      document.querySelector('button[type="submit"]').textContent =
+        "Crear Cita";
+      estadoActualizar = false;
+    }
     //Como usamos un objeto global, js agrega el ultimo que se agrego como todas las copias en el arreglo
     //para evitar esto pasamos una copia del ultimo objeto al metodo agregar  y no el objeto global
-    ui.limpiarHtml();
-    cita.id = Date.now();
-    adminPaciente.agregarCita({ ...cita });
-    ui.mostrarMensaje("Cita agregada correctamente", "success");
+
     ui.mostrarCita(adminPaciente);
     formulario.reset();
     reiniciarObjeto();
@@ -191,6 +211,27 @@ function reiniciarObjeto() {
 
 function eliminarCita(id) {
   adminPaciente.eliminarCita(id);
-
   ui.mostrarCita(adminPaciente);
+}
+
+function cargarEdicion(citaEditar) {
+  const id = citaEditar.id;
+  nombre.value = citaEditar.mascota;
+  propietario.value = citaEditar.propietario;
+  telefono.value = citaEditar.telefono;
+  fecha.value = citaEditar.fecha;
+  hora.value = citaEditar.hora;
+  sintomas.value = citaEditar.sintomas;
+
+  cita.mascota = nombre.value;
+  cita.propietario = propietario.value;
+  cita.telefono = telefono.value;
+  cita.fecha = fecha.value;
+  cita.hora = hora.value;
+  cita.sintomas = sintomas.value;
+  cita.id = id;
+
+  document.querySelector('button[type="submit"]').textContent =
+    "Guardar Cambios";
+  estadoActualizar = true;
 }
