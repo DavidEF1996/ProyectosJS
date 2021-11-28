@@ -12,6 +12,7 @@ const sintomas = document.querySelector("#sintomas");
 let estadoActualizar = false;
 
 //LISTENERS
+document.addEventListener("DOMContentLoaded", scrolbar);
 principal();
 function principal() {
   formulario.addEventListener("submit", obtenerDatosPaciente);
@@ -234,4 +235,8 @@ function cargarEdicion(citaEditar) {
   document.querySelector('button[type="submit"]').textContent =
     "Guardar Cambios";
   estadoActualizar = true;
+}
+
+function scrolbar() {
+  console.log(listado.clientWidth);
 }
