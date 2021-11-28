@@ -10,9 +10,9 @@ const hora = document.querySelector("#hora");
 const sintomas = document.querySelector("#sintomas");
 
 let estadoActualizar = false;
+let recibir = [];
 
 //LISTENERS
-document.addEventListener("DOMContentLoaded", scrolbar);
 principal();
 function principal() {
   formulario.addEventListener("submit", obtenerDatosPaciente);
@@ -24,6 +24,13 @@ function principal() {
   fecha.addEventListener("input", datosCita);
   hora.addEventListener("input", datosCita);
   sintomas.addEventListener("input", datosCita);
+
+  document.addEventListener("DOMContentLoaded", () => {
+    recibir = JSON.parse(localStorage.getItem("listado")) || [];
+    adminPaciente.pacientes = recibir;
+    console.log(adminPaciente);
+    ui.mostrarCita(adminPaciente);
+  });
 }
 
 //OBJETOS Y CLASES
@@ -44,18 +51,18 @@ class Paciente {
 
   agregarCita(cita) {
     this.pacientes = [...this.pacientes, cita];
-    console.log(this.pacientes);
   }
 
   eliminarCita(id) {
     this.pacientes = this.pacientes.filter((cita) => cita.id !== id);
+    saveLocalStorage();
   }
 
   actualizarCita(cita) {
     this.pacientes = this.pacientes.map((paciente) =>
       paciente.id === cita.id ? cita : paciente
     );
-    console.log(this.pacientes.length);
+    saveLocalStorage();
   }
 }
 
@@ -180,14 +187,15 @@ function obtenerDatosPaciente(e) {
       cita.id = Date.now();
       adminPaciente.agregarCita({ ...cita });
       ui.mostrarMensaje("Cita agregada correctamente", "success");
+      saveLocalStorage();
     } else {
-      console.log("Estoy editando");
       adminPaciente.actualizarCita({ ...cita });
       ui.mostrarMensaje("Se actualizo correctamente", "success");
       estadoActualizar = false;
       document.querySelector('button[type="submit"]').textContent =
         "Crear Cita";
       estadoActualizar = false;
+      saveLocalStorage();
     }
     //Como usamos un objeto global, js agrega el ultimo que se agrego como todas las copias en el arreglo
     //para evitar esto pasamos una copia del ultimo objeto al metodo agregar  y no el objeto global
@@ -237,6 +245,6 @@ function cargarEdicion(citaEditar) {
   estadoActualizar = true;
 }
 
-function scrolbar() {
-  console.log(listado.clientWidth);
+function saveLocalStorage() {
+  localStorage.setItem("listado", JSON.stringify(adminPaciente.pacientes));
 }
