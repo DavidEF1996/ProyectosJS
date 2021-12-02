@@ -1,3 +1,4 @@
+import { Paciente } from "../js/clases/Paciente.js";
 //VARIABLES
 const formulario = document.querySelector("#nueva-cita");
 const listado = document.querySelector("#citas");
@@ -44,27 +45,6 @@ const cita = {
 };
 
 //Clases
-class Paciente {
-  constructor() {
-    this.pacientes = [];
-  }
-
-  agregarCita(cita) {
-    this.pacientes = [...this.pacientes, cita];
-  }
-
-  eliminarCita(id) {
-    this.pacientes = this.pacientes.filter((cita) => cita.id !== id);
-    saveLocalStorage();
-  }
-
-  actualizarCita(cita) {
-    this.pacientes = this.pacientes.map((paciente) =>
-      paciente.id === cita.id ? cita : paciente
-    );
-    saveLocalStorage();
-  }
-}
 
 class UI {
   mostrarMensaje(mensaje, tipo) {
@@ -154,6 +134,7 @@ class UI {
       mensajeCita.appendChild(btnEditar);
       listado.appendChild(mensajeCita);
     });
+    saveLocalStorage();
   }
 
   limpiarHtml() {
